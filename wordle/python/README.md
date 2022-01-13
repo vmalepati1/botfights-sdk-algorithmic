@@ -13,10 +13,10 @@ To play against the computer:
 $ python wordle.py human
 ```
 
-To test a bot named `play` in `my-bot.py` against 100 words in `sowpods_5s.txt`:
+To test a bot named `play` in `sample-bot.py` against 100 words in `wordlist.txt`:
 
 ```
-$ python wordle.py bot sowpods5.txt my-bot.play 100
+$ python wordle.py bot wordlist.txt sample-bot.play 100
 ```
 
 To write a bot, write a function `play` in a python file that takes a
@@ -33,7 +33,7 @@ and the second, fourth, and fifth letters do not appear in the secret word (`1`)
 To "score" your bot:
 
 ```
-$ python3 wordle.py bot sowpods5.txt bot-threes.play 10 | grep WORD
+$ python wordle.py bot wordlist.txt sample-bot.play 10 | grep WORD
 WORD    1       30      30      30.000000       gushy
 WORD    2       26      56      28.000000       steek
 WORD    3       9       65      21.666667       mosks
@@ -46,6 +46,6 @@ WORD    9       27      203     22.555556       clung
 WORD    10      42      245     24.500000       rawly
 ```
 
-Here ```bot-threes``` solved 10 words in 245 guesses for an average of 24.5
+Here ```sample-bot``` solved 10 words in 245 guesses for an average of 24.5
 guesses per word. Can you do better?
 
