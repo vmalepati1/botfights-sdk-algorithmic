@@ -34,18 +34,18 @@ To "score" your bot:
 
 ```
 $ python wordle.py bot wordlist.txt sample-bot.play 10 | grep WORD
-WORD    1       30      30      30.000000       gushy
-WORD    2       26      56      28.000000       steek
-WORD    3       9       65      21.666667       mosks
-WORD    4       17      82      20.500000       bourn
-WORD    5       23      105     21.000000       okapi
-WORD    6       18      123     20.500000       randy
-WORD    7       16      139     19.857143       psoas
-WORD    8       37      176     22.000000       rigor
-WORD    9       27      203     22.555556       clung
-WORD    10      42      245     24.500000       rawly
+WORD    1       elect   sample-bot.play 8       8.000   0.064   0.064
+WORD    2       neemb   sample-bot.play 21      14.500  0.130   0.097
+WORD    3       ylems   sample-bot.play 24      17.667  0.146   0.113
+WORD    4       heeds   sample-bot.play 10      15.750  0.068   0.102
+WORD    5       talaq   sample-bot.play 9       14.400  0.056   0.093
+WORD    6       visas   sample-bot.play 11      13.833  0.081   0.091
+WORD    7       beery   sample-bot.play 18      14.429  0.105   0.093
+WORD    8       imbar   sample-bot.play 10      13.875  0.075   0.091
+WORD    9       lawks   sample-bot.play 19      14.444  0.089   0.091
+WORD    10      kraal   sample-bot.play 25      15.500  0.195   0.101
 ```
 
-Here ```sample-bot``` solved 10 words in 245 guesses for an average of 24.5
+Here `sample-bot` solved 10 words in an average of 15.5
 guesses per word. Can you do better?
 
