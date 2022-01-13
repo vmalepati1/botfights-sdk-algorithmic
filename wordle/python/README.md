@@ -49,18 +49,18 @@ WORD    10      kraal   sample-bot.play 25      15.500  0.195   0.101
 Here `sample-bot` solved 10 words in an average of 15.5 guesses per word.
 
 Once you've written your bot, you can compete against other bots at
-https://botfights.io/.
+[botfights.io](https://botfights.io/).
 
-To play your bot on botfights.io in the "test" event, where XXXX and YYYYYYYYY
+To play your bot on botfights.io in the `test` event, where `XXXX` and `YYYYYYYYY`
 are your credentials:
 
 ```
 $ python wordle.py botfights sample-bot.play XXXXX YYYYYYYYYY test
 ```
 
-To enter your bot in the "botfights_i" event:
+To fight `sample-bot` in the [botfights_i](https://botfights.io/event/botfights_i) event:
 
 ```
 $ python wordle.py botfights sample-bot.play XXXXX YYYYYYYYYY botfights\_i
-'''
+```
 
