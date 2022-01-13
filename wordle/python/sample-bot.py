@@ -31,7 +31,9 @@ def could_match(target, last_guess, last_score):
 
 
 def play(state):
-    guess_num, secret_hash, last_guess, last_score = state.split()
+    # state looks like: "-----:00000,arose:31112,amend:31211"
+    history = state.split(',')
+    last_guess, last_score = history[-1].split(':')
     possible = list(filter(lambda x: could_match(x, last_guess, last_score), get_wordlist()))
     return random.choice(possible)
 

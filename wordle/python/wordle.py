@@ -26,7 +26,9 @@ To run a tournament for multiple bots:
 '''
 
 
-import sys, importlib, hashlib, random, time
+import sys, importlib, random, time
+
+import requests
 
 
 MAGIC = 'WORDLE'
@@ -54,8 +56,8 @@ def load_bot(s):
     return bot
 
 
-def get_play(bot, guess_num, secret_hash, last_guess, last_score):
-    state = '%d\t%s\t%s\t%s' % (guess_num, secret_hash, last_guess, last_score)
+def get_play(bot, history):
+    state = ','.join(map(lambda x: '%s:%s' % (x[0], x[1]), history))
     response = bot(state)
     return response
 
@@ -78,14 +80,15 @@ def calc_score(secret, guess, wordlist):
 
 
 def play_word(bot, secret, wordlist):
-    guess_num = 1
     guess = '-' * len(secret)
     score = calc_score(secret, guess, wordlist)
-    secret_hash = hashlib.sha256((MAGIC + secret).encode()).hexdigest()[:7]
+    history = [(guess, score), ]
+    guess_num = 1
     while 1:
-        guess = get_play(bot, guess_num, secret_hash, guess, score)
+        guess = get_play(bot, history)
         score = calc_score(secret, guess, wordlist)
-        sys.stdout.write('PLAY\t%d\t%s\t%s\t%s\t%s\n' % (guess_num, secret_hash, secret, guess, score))
+        history.append((guess, score))
+        sys.stdout.write('PLAY\t%d\t%s\t%s\t%s\n' % (guess_num, secret, guess, score))
         if guess == secret:
             return guess_num
         if guess_num == len(wordlist):
