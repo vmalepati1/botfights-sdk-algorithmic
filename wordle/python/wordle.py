@@ -10,18 +10,22 @@ To play against the computer:
 
    $ python wordle.py human
 
-To test a bot named "play" in "sample-bot.py" against 1000 random words in
-wordlist "wordlist.txt":
+To test a bot named "play" in "sample-bot.py" against the word "apple":
+
+   $ python wordle.py word wordlist.txt sample-bot.play apple
+
+To test against 1000 random words in wordlist "wordlist.txt":
 
    $ python wordle.py bot wordlist.txt sample-bot.play 1000
 
-To test a bot against a particular word "clank":
+To play your bot on botfights.io in the "test" event, where XXXX and YYYYYYYYY
+are your credentials:
 
-   $ python wordle.py word wordlist.txt sample-bot.play clank
+   $ python wordle.py botfights sample-bot.play XXXXX YYYYYYYYYY test
 
-To run a tournament for multiple bots:
+To enter your bot in the "botfights_i" event:
 
-   $ python wordle.py bots wordlist.txt 100 seed my-bot.play her-bot.play his-bot.play
+   $ python wordle.py botfights sample-bot.play XXXXX YYYYYYYYYY botfights_i
 
 '''
 
@@ -144,6 +148,40 @@ def play_human(secret, wordlist):
     return guess_num
 
 
+def play_botfights(bot, username, password, event):
+    print('Creating fight on botfights.io ...')
+    payload = {'event': event}
+    r = requests.put('https://api.botfights.io/api/v1/game/wordle/', auth=(username, password), json=payload)
+    fight = r.json()
+    fight_id = fight['fight_id']
+    feedback = fight['feedback']
+    print('Fight created: https://botfights.io/fight/%s' % fight_id)
+    history = {}
+    for i, f in feedback.items():
+        history[i] = [['-' * len(f), f], ]
+    round_num = 0
+    while 1:
+        guesses = {}
+        for i, f in feedback.items():
+            if '33333' == f:
+                continue
+            history[i][-1][1] = f
+            guess = get_play(bot, history[i])
+            guesses[i] = guess
+            history[i].append([guess, None])
+        payload = {'guesses': guesses}
+        round_num += 1
+        print('Round %d, %d words to go ...' % (round_num, len(guesses)))
+        time.sleep(1.0)
+        r = requests.patch('https://api.botfights.io/api/v1/game/wordle/%s' % fight_id, auth=(username, password), json=payload)
+        response = r.json()
+        feedback = response['feedback']
+        if 'score' in response:
+            score = int(response['score'])
+            print('Fight complete. Final score: %d' % score)
+            break
+
+
 def main(argv):
     if 0 == len(argv):
         print(USAGE)
@@ -198,6 +236,10 @@ def main(argv):
         wordlist = load_wordlist(fn_wordlist)
         x = play_word(bot, secret, wordlist)
         return x
+    elif 'botfights' == c:
+        bot = load_bot(argv[1])
+        username, password, event = argv[2:5]
+        play_botfights(bot, username, password, event)
     else:
         print(USAGE)
         sys.exit()
