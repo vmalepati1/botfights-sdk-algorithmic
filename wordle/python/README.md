@@ -61,6 +61,6 @@ $ python wordle.py botfights sample-bot.play XXXXX YYYYYYYYYY test
 To fight `sample-bot` in the [botfights_i](https://botfights.io/event/botfights_i) event:
 
 ```
-$ python wordle.py botfights sample-bot.play XXXXX YYYYYYYYYY botfights\_i
+$ python wordle.py botfights sample-bot.play XXXXX YYYYYYYYYY botfights_i
 ```
 
