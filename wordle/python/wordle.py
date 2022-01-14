@@ -69,17 +69,34 @@ def get_play(bot, history):
 def calc_score(secret, guess, wordlist):
     if not guess in wordlist:
         return '0' * len(secret)
-    a = []
-    for i, ch in enumerate(secret):
+
+    a = ['0'] * len(secret)
+    secret_arr = [char for char in secret]
+
+    # First pass of the guess, to find any that match exactly
+    for i, ch in enumerate(secret_arr):
         g = '-'
         if i < len(guess):
             g = guess[i]
-        if g == ch:
-            a.append('3')
-        elif g in secret:
-            a.append('2')
+        if ch == g:
+            a[i] = '3'
+            secret_arr[i] = ' '
+
+    # Second pass to score the rest, without re-using the secret letters more than once
+    for i, ch in enumerate(secret_arr):
+        if a[i] == '3':
+            continue
+        g = '-'
+        if i < len(guess):
+            g = guess[i]
+
+        if g in secret_arr:
+            idx = secret_arr.index(g)
+            secret_arr[idx] = ' '
+            a[i] = '2'
         else:
-            a.append('1')
+            a[i] = '1'
+
     return ''.join(a)
 
 
