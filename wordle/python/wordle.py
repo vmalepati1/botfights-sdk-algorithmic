@@ -60,7 +60,6 @@ def python2or3_gzip_decompress(s):
     except:
         import zlib, StringIO
         return gzip.GzipFile(fileobj=StringIO.StringIO(s)).read()
-    return response
 
 
 def call_api(username, password, method, path, payload = None):
