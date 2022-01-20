@@ -1,10 +1,10 @@
-# wordle.py -- botfights harness for wordle
+# wordle.py -- python harness for wordle game on botfights.io
 
 
 USAGE = '''\
-This is a harness to write bots that play wordle.
+This is a harness to write bots that play WORDLE on https://botfights.io/ .
 
-See: https://www.powerlanguage.co.uk/wordle/
+See: https://botfights.io/game/wordle
 
 To play against the computer:
 
@@ -30,19 +30,61 @@ To enter your bot in the "botfights_i" event:
 '''
 
 
-import sys, importlib, random, time
-
-import requests
+import sys, importlib, random, time, base64, json
 
 
-MAGIC = 'WORDLE'
+RANDOM_SEED = 'WORDLE'
+
+
+API = 'https://api.botfights.io/api/v1/'
+
+
+def python2or3_urllib_request_urlopen(url, headers, data, method):
+    try:
+        import urllib.request
+        request = urllib.request.Request(url=url, headers=headers, data=data)
+        request.get_method = lambda: method
+        response = urllib.request.urlopen(request)
+    except:
+        import urllib2
+        request = urllib2.Request(url=url, headers=headers, data=data)
+        request.get_method = lambda: method
+        response = urllib2.urlopen(request)
+    return response
+
+
+def python2or3_gzip_decompress(s):
+    try:
+        import gzip
+        return gzip.decompress(s)
+    except:
+        import zlib, StringIO
+        return gzip.GzipFile(fileobj=StringIO.StringIO(s)).read()
+    return response
+
+
+def call_api(username, password, method, path, payload = None):
+    url = '%s%s' % (API, path)
+    headers = {}
+    headers['Authorization'] = 'Basic %s' % (base64.b64encode(('%s:%s' % (username, password)).encode()).decode())
+    headers['Accept-Encoding'] = 'gzip'
+    data = None
+    if None != payload:
+        headers['Content-type'] = 'application/json'
+        data = json.dumps(payload).encode()
+    response = python2or3_urllib_request_urlopen(url, headers, data, method)
+    response_data = response.read()
+    if response.info().get('Content-Encoding') == 'gzip':
+        response_data = python2or3_gzip_decompress(response_data)
+    response_value = json.loads(response_data)
+    return response_value
 
 
 g_random = None
 def get_random():
     global g_random
     if None == g_random:
-        g_random = random.Random(MAGIC)
+        g_random = random.Random(RANDOM_SEED)
     return g_random
 
 
@@ -168,10 +210,9 @@ def play_human(secret, wordlist):
 def play_botfights(bot, username, password, event):
     print('Creating fight on botfights.io ...')
     payload = {'event': event}
-    r = requests.put('https://api.botfights.io/api/v1/game/wordle/', auth=(username, password), json=payload)
-    fight = r.json()
-    fight_id = fight['fight_id']
-    feedback = fight['feedback']
+    response = call_api(username, password, 'PUT', 'game/wordle/', payload)
+    fight_id = response['fight_id']
+    feedback = response['feedback']
     print('Fight created: https://botfights.io/fight/%s' % fight_id)
     history = {}
     for i, f in feedback.items():
@@ -180,7 +221,7 @@ def play_botfights(bot, username, password, event):
     while 1:
         guesses = {}
         for i, f in feedback.items():
-            if '33333' == f:
+            if ('3' * len(f)) == f:
                 continue
             history[i][-1][1] = f
             guess = get_play(bot, history[i])
@@ -190,8 +231,7 @@ def play_botfights(bot, username, password, event):
         round_num += 1
         print('Round %d, %d words to go ...' % (round_num, len(guesses)))
         time.sleep(1.0)
-        r = requests.patch('https://api.botfights.io/api/v1/game/wordle/%s' % fight_id, auth=(username, password), json=payload)
-        response = r.json()
+        response = call_api(username, password, 'PATCH', 'game/wordle/%s' % fight_id, payload)
         feedback = response['feedback']
         if 'score' in response:
             score = int(response['score'])
@@ -257,6 +297,16 @@ def main(argv):
         bot = load_bot(argv[1])
         username, password, event = argv[2:5]
         play_botfights(bot, username, password, event)
+    elif 'api' == c:
+        username = argv[1]
+        password = argv[2]
+        method = argv[3]
+        path = argv[4]
+        payload = None
+        if method in ('PUT', 'PATCH', 'POST'):
+            payload = json.loads(sys.stdin.read())
+        x = call_api(username, password, method, path, payload)
+        sys.stdout.write(json.dumps(x, indent=2))
     else:
         print(USAGE)
         sys.exit()
