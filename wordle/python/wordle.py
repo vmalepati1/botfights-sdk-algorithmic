@@ -59,15 +59,16 @@ def python2or3_urllib_request_urlopen(url, headers, data, method):
 
 
 def python2or3_gzip_decompress(s):
-    has_gzip = True
+    import gzip
+    has_gzip_decompress = True
     try:
-        import gzip
+        foo = gzip.decompress
     except:
-        has_gzip = False
-    if has_gzip:
+        has_gzip_decompress = False
+    if has_gzip_decompress:
         return gzip.decompress(s)
     else:
-        import zlib, StringIO
+        import StringIO
         return gzip.GzipFile(fileobj=StringIO.StringIO(s)).read()
 
 
