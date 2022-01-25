@@ -40,12 +40,17 @@ API = 'https://api.botfights.io/api/v1/'
 
 
 def python2or3_urllib_request_urlopen(url, headers, data, method):
+    has_request = True
     try:
         import urllib.request
+    except:
+        has_request = False
+
+    if has_request:
         request = urllib.request.Request(url=url, headers=headers, data=data)
         request.get_method = lambda: method
         response = urllib.request.urlopen(request)
-    except:
+    else:
         import urllib2
         request = urllib2.Request(url=url, headers=headers, data=data)
         request.get_method = lambda: method
@@ -54,10 +59,14 @@ def python2or3_urllib_request_urlopen(url, headers, data, method):
 
 
 def python2or3_gzip_decompress(s):
+    has_gzip = True
     try:
         import gzip
-        return gzip.decompress(s)
     except:
+        has_gzip = False
+    if has_gzip:
+        return gzip.decompress(s)
+    else:
         import zlib, StringIO
         return gzip.GzipFile(fileobj=StringIO.StringIO(s)).read()
 
@@ -166,11 +175,12 @@ def play_bots(bots, wordlist, n):
     for i in bot_keys:
         total_guesses[i] = 0
         total_time[i] = 0.0
+    wordlist_as_list = sorted(list(wordlist))
     if 0 == n:
         count = len(wordlist)
+        get_random().shuffle(wordlist_as_list)
     else:
         count = n
-    wordlist_as_list = sorted(list(wordlist))
     for i in range(count):
         if 0 == n:
             word = wordlist_as_list[i]
@@ -219,10 +229,14 @@ def play_botfights(bot, username, password, event):
     round_num = 0
     while 1:
         guesses = {}
+        n = 0
         for i, f in feedback.items():
             if ('3' * len(f)) == f:
                 continue
             history[i][-1][1] = f
+            n += 1
+            if 0 == n % 100:
+                print('\tCalling get_play() %d ...' % n)
             guess = get_play(bot, history[i])
             guesses[i] = guess
             history[i].append([guess, None])
