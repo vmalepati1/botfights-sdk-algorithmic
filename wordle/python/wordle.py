@@ -1,10 +1,10 @@
-# wordle.py -- python harness for wordle game on botfights.io
+# wordle.py -- python harness for wordle game on botfights.ai
 
 
 USAGE = '''\
-This is a harness to write bots that play WORDLE on https://botfights.io/ .
+This is a harness to write bots that play WORDLE on https://botfights.ai/ .
 
-See: https://botfights.io/game/wordle
+See: https://botfights.ai/game/wordle
 
 To play against the computer:
 
@@ -18,7 +18,7 @@ To test against 1000 random words in wordlist "wordlist.txt":
 
    $ python wordle.py bot wordlist.txt sample-bot.play 1000
 
-To play your bot on botfights.io in the "test" event, where XXXX and YYYYYYYYY
+To play your bot on botfights.ai in the "test" event, where XXXX and YYYYYYYYY
 are your credentials:
 
    $ python wordle.py botfights sample-bot.play XXXXX YYYYYYYYYY test
@@ -218,12 +218,12 @@ def play_human(secret, wordlist):
 
 
 def play_botfights(bot, username, password, event):
-    print('Creating fight on botfights.io ...')
+    print('Creating fight on botfights.ai ...')
     payload = {'event': event}
     response = call_api(username, password, 'PUT', 'game/wordle/', payload)
     fight_id = response['fight_id']
     feedback = response['feedback']
-    print('Fight created: https://botfights.io/fight/%s' % fight_id)
+    print('Fight created: https://botfights.ai/fight/%s' % fight_id)
     history = {}
     for i, f in feedback.items():
         history[i] = [['-' * len(f), f], ]
