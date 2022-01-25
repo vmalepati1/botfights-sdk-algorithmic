@@ -36,7 +36,7 @@ import sys, importlib, random, time, base64, json
 RANDOM_SEED = 'WORDLE'
 
 
-API = 'https://api.botfights.io/api/v1/'
+API = 'https://api.botfights.ai/api/v1/'
 
 
 def python2or3_urllib_request_urlopen(url, headers, data, method):
