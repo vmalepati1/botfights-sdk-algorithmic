@@ -6,12 +6,15 @@
 import random
 
 
+FN_WORDLIST = 'wordlist.txt'
+
+
 g_wordlist = None
 def get_wordlist():
     global g_wordlist
     if None == g_wordlist:
         g_wordlist = []
-        for i in open('wordlist.txt').readlines():
+        for i in open(FN_WORDLIST).readlines():
             i = i[:-1]
             g_wordlist.append(i)
     return g_wordlist
