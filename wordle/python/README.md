@@ -58,7 +58,7 @@ are your credentials:
 $ python wordle.py botfights sample-bot.play XXXXX YYYYYYYYYY test
 ```
 
-To fight `sample-bot` in the [botfights_i](https://botfights.ai/event/botfights_i) event:
+To fight `sample-bot` in the [botfights_i](https://botfights.ai/tournament/botfights_i) tournament:
 
 ```
 $ python wordle.py botfights sample-bot.play XXXXX YYYYYYYYYY botfights_i
