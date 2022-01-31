@@ -20,7 +20,7 @@ Wordle
 
     $ python wordle.py botfights sample-bot.play XXXXX YYYYYYYYYY test
 
-6\. Enter your bot in the [BOTFIGHTS I](https://botfights.ai/tournaments/botfights_i) tournament (the full 1000 words)
+6\. Enter your bot in the [BOTFIGHTS I](https://botfights.ai/tournament/botfights_i) tournament (the full 1000 words)
 
     $ python wordle.py botfights sample-bot.play XXXXX YYYYYYYYYY botfights_i
 
