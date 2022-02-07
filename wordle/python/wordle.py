@@ -250,6 +250,7 @@ def play_botfights(bot, username, password, event):
         if 'score' in response:
             score = int(response['score'])
             print('Fight complete. Final score: %d' % score)
+            print('https://botfights.ai/fight/%s' % fight_id)
             break
 
 
