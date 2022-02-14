@@ -18,6 +18,11 @@ To test against 1000 random words in wordlist "wordlist.txt":
 
    $ python wordle.py bot wordlist.txt sample-bot.play 1000
 
+To test against 1000 random words in wordlist "wordlist.txt",
+but using secrets from secrets.txt:
+
+   $ python wordle.py bot wordlist.txt sample-bot.play 1000 secrets.txt
+
 To play your bot on botfights.ai in the "test" event, where XXXX and YYYYYYYYY
 are your credentials:
 
@@ -168,7 +173,7 @@ def play_word(bot, secret, wordlist):
         guess_num += 1
 
 
-def play_bots(bots, wordlist, n):
+def play_bots(bots, wordlist, wordlist_secrets, n):
     total_guesses = {}
     total_time = {}
     last_guesses = {}
@@ -176,17 +181,17 @@ def play_bots(bots, wordlist, n):
     for i in bot_keys:
         total_guesses[i] = 0
         total_time[i] = 0.0
-    wordlist_as_list = sorted(list(wordlist))
+    wordlist_secrets_as_list = sorted(list(wordlist_secrets))
     if 0 == n:
         count = len(wordlist)
-        get_random().shuffle(wordlist_as_list)
+        get_random().shuffle(wordlist_secrets_as_list)
     else:
         count = n
     for i in range(count):
         if 0 == n:
             word = wordlist_as_list[i]
         else:
-            word = get_random().choice(wordlist_as_list)
+            word = get_random().choice(wordlist_secrets_as_list)
         for bot in bot_keys:
             t0 = time.time()
             guesses = play_word(bots[bot], word, wordlist)
@@ -266,9 +271,14 @@ def main(argv):
             wordlist = load_wordlist(argv[1])
         else:
             wordlist = load_wordlist('wordlist.txt')
-        secret = get_random().choice(list(wordlist))
-        if 2 == len(argv):
-            secret = argv[2]
+        wordlist_secrets = wordlist
+        if 2 < len(argv):
+            wordlist_secrets = load_wordlist(argv[2])
+        else:
+            wordlist_secrets = load_wordlist('wordlist-secrets.txt')
+        secret = get_random().choice(list(wordlist_secrets))
+        if 4 <= len(argv):
+            secret = argv[3]
         x = play_human(secret, wordlist)
         return x
     elif 'help' == c:
@@ -286,20 +296,12 @@ def main(argv):
         n = 0
         if 4 <= len(argv):
             n = int(argv[3])
+        fn_wordlist_secrets = fn_wordlist
         if 5 <= len(argv):
-            get_random().seed(argv[4])
+            fn_wordlist_secrets = argv[4]
         wordlist = load_wordlist(fn_wordlist)
-        x = play_bots({argv[2]: bot}, wordlist, n)
-        return x
-    elif 'bots' == c:
-        fn_wordlist = argv[1]
-        n = int(argv[2])
-        get_random().seed(argv[3])
-        bots = {}
-        for i in argv[4:]:
-            bots[i] = load_bot(i)
-        wordlist = load_wordlist(fn_wordlist)
-        x = play_bots(bots, wordlist, n)
+        wordlist_secrets = load_wordlist(fn_wordlist_secrets)
+        x = play_bots({argv[2]: bot}, wordlist, wordlist_secrets, n)
         return x
     elif 'word' == c:
         fn_wordlist = argv[1]
