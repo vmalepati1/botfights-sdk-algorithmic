@@ -14,21 +14,21 @@ Your score for this round is two squared, 4; your score for a fight is the sum o
     $ git clone https://github.com/botfights/botfights-sdk.git
     $ cd botfights-sdk/countdown/python
 
-2\. Next, edit the [get_play()](https://github.com/botfights/botfights-sdk/blob/main/countdown/python/sample-bot.py#L33) function in the [sample bot](https://github.com/botfights/botfights-sdk/blob/main/countdown/sample-bot.py) (get\_play takes a tuple of (target, operand\_list) like `[40, [7 2 3 ]]` and should return your code encoded as a RPN string)
+2\. Next, edit the [get\_play()](https://github.com/botfights/botfights-sdk/blob/main/countdown/python/sample-bot.py#L33) function in the [sample-bot](https://github.com/botfights/botfights-sdk/blob/main/countdown/sample-bot.py) (get\_play takes a tuple of (target, operand\_list) like `[40, [7 2 3 ]]` and should return your code encoded as a RPN string)
 
 3\. Test your bot locally
 
-    $ python botfights.py local countdown sample_bot.get_play
+    $ python botfights.py local countdown sample-bot.get_play
 
 4\. Once your bot is ready to fight online, [register](https://botfights.ai/register) to get your credentials, if you haven't done so already
 
-5\. Fight your bot remotely to make sure everything works (replace XXXXX and YYYYYYYYYY with your credentials)
+5\. Fight your bot remotely to make sure everything works (replace XXXX and YYYY with your credentials)
 
-    $ python botfights.py --username XXXX --password YYYYY remote countdown sample-bot.play
+    $ python botfights.py --username XXXX --password YYYYY remote countdown sample-bot.get_play
 
 6\. Enter your bot in the [BOTFIGHTS VI](https://botfights.ai/tournament/botfights_vi) tournament (note the game options are much harder, you might want to test locally first)
 
-    $ python botfights.py --username XXXX --password YYYY --tournament_id botfights_vi countdown sample-bot.play
+    $ python botfights.py --username XXXX --password YYYY --tournament_id botfights_vi countdown sample-bot.get_play
 
 7\. Rinse, repeat!
 
