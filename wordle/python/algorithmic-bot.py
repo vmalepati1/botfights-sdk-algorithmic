@@ -20,9 +20,12 @@ def get_word_table(gray_letters, yellow_letters, green_letters, subset, verbose=
         # Innocent till proven guilty
         viable_word = True
 
-        for letter, idx in gray_letters.items():
+        for letter, idx in gray_letters:
             if letter in word:
-                if letter not in yellow_letters and letter not in green_letters:
+                yellow_letters_subset = [p[0] for p in yellow_letters]
+                green_letters_subset = [p[0] for p in green_letters]
+                
+                if letter not in yellow_letters_subset and letter not in green_letters_subset:
                     viable_word = False
                     break
                 else:
@@ -33,7 +36,7 @@ def get_word_table(gray_letters, yellow_letters, green_letters, subset, verbose=
                         break
 
         if viable_word is True:
-            for letter, idx in yellow_letters.items():
+            for letter, idx in yellow_letters:
                 if letter not in word:
                     viable_word = False
                     break
@@ -45,7 +48,7 @@ def get_word_table(gray_letters, yellow_letters, green_letters, subset, verbose=
                     break
 
         if viable_word is True:
-            for letter, idx in green_letters.items():
+            for letter, idx in green_letters:
                 if letter not in word:
                     viable_word = False
                     break
@@ -61,19 +64,25 @@ def get_word_table(gray_letters, yellow_letters, green_letters, subset, verbose=
 
     return table_result
 
-already_solved_words = []
+guessed_words = []
+correct_words = []
 
 def play(state):
+    global guessed_words
+    global correct_words
+    
     # state looks like: "-----:00000,arose:31112,amend:31211"
     wordlist = get_wordlist()
 
-    green_letters = {}
-    yellow_letters = {}
-    gray_letters = {}
+    green_letters = []
+    yellow_letters = []
+    gray_letters = []
 
     split_states = state.split(',')
 
     num_states = len(split_states)
+
+    last_guess, last_feedback = split_states[-1].split(':')
     
     if num_states > 1:
         for pair in split_states:
@@ -82,15 +91,28 @@ def play(state):
             if guess != '-----':
                 for idx, evaluation in enumerate(feedback):
                     if evaluation == '3':
-                        green_letters[guess[idx]] = idx
+                        green_letters.append((guess[idx], idx))
                     elif evaluation == '2':
-                        yellow_letters[guess[idx]] = idx
-                    else:
-                        gray_letters[guess[idx]] = idx
+                        yellow_letters.append((guess[idx], idx))
+                    elif evaluation == '1':
+                        gray_letters.append((guess[idx], idx))
 
+        # Might be picking same word as those already guessed
         word_table = get_word_table(gray_letters, yellow_letters, green_letters, wordlist, verbose=False)
 
-        return random.choice(word_table)
+        word_table = [w for w in word_table if w not in correct_words]
+
+        word = random.choice(word_table)
+
+        guessed_words.append(word)
+
+        return word
     else:
-        return 'slate'
+        if len(guessed_words) > 0:
+            correct_words.append(guessed_words[-1])
+            # print(correct_words)
+
+            guessed_words = []
+        
+        return 'arise'
 
