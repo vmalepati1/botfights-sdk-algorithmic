@@ -97,7 +97,6 @@ def play(state):
                     elif evaluation == '1':
                         gray_letters.append((guess[idx], idx))
 
-        # Might be picking same word as those already guessed
         word_table = get_word_table(gray_letters, yellow_letters, green_letters, wordlist, verbose=False)
 
         word_table = [w for w in word_table if w not in correct_words]
